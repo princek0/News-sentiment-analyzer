@@ -1,5 +1,7 @@
 import requests
-import beautifulsoup
+import bs4
 
-URL = "https://realpython.github.io/fake-jobs/"
+URL = "https://www.thisisprince.com/"
 page = requests.get(URL)
+
+print(page.text)
