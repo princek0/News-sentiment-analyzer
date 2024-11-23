@@ -6,4 +6,4 @@ Initially, I intend to scrape headlines of news and use a pre-trained NLP model 
 
 # To-do 
 
-- Scrape headlines of news
+- ~Scrape headlines of yahoo news~
