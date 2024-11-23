@@ -7,3 +7,4 @@ Initially, I intend to scrape headlines of news and use a pre-trained NLP model 
 # To-do 
 
 - ~Scrape headlines of yahoo news~
+- Add sentiment analysis of headlines
