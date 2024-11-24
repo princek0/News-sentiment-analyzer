@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 # Yahoo finance headlien scraper
 
-url= input("Enter Yahoo finacne URL:")
+url= input("Enter Yahoo finance URL:")
 page = requests.get(url)
 soup = BeautifulSoup(page.text, features="html.parser")
 h1 = soup.find('h1', class_='cover-title')
