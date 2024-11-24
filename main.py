@@ -1,15 +1,45 @@
-import requests
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from matplotlib import pyplot as plt
 
-# Yahoo finance headlien scraper
+# Yahoo finance headline scraper
+ticker = input("Enter stock ticker:")
 
-url= input("Enter Yahoo finance URL:")
-page = requests.get(url)
-soup = BeautifulSoup(page.text, features="html.parser")
-h1 = soup.find('h1', class_='cover-title')
-h1_text = h1.get_text(strip=True) 
+# Setting up Selenium
+
+chrome_options = Options()
+chrome_options.add_argument("--headless") # Stops selenium from showing GUI
+
+driver = webdriver.Chrome(options=chrome_options) 
+driver.get( f"https://uk.finance.yahoo.com/quote/{ticker}/news/")
+
+# Accepting permissions and cookies
+try:
+    cookie_button = driver.find_element(By.XPATH, '//button[contains(text(), "Accept")]')
+    cookie_button.click()
+except Exception as e:
+    print("No consent required:", e)
+
+# Scrolling to avoid lazy loading
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+# Letting the automation pause for relevant elements to load successfully
+WebDriverWait(driver, 10).until(
+    EC.presence_of_all_elements_located((By.CLASS_NAME, "clamp"))
+)
+
+# Obtaining headlines
+page = driver.page_source
+soup = BeautifulSoup(page, features="html.parser")
+headlines = soup.find_all('h3', class_="clamp")  
+headlines_text = [tag.get_text(strip=True) for tag in headlines]
+driver.quit()
 
 # NLTK sentiment analyzer
 
@@ -24,6 +54,7 @@ financial_lexicon = { # custom lexicon for financial extension
     "strong": 1.0,
     "expansion": 2.0,
     "exceeded": 2.0,
+    "unveils": 1.0,
     "launching": 1.5,
     "bearish": -3.0,
     "loss": -2.5,
@@ -47,22 +78,19 @@ financial_lexicon = { # custom lexicon for financial extension
 }
 
 sia.lexicon.update(financial_lexicon) # updating pretrained lexicon
+sentiments = [sia.polarity_scores(headline) for headline in headlines_text] # analyzing sentiment
+compound_scores = [sia.polarity_scores(headline)['compound'] for headline in headlines_text] # list of compound scores in chronological order
 
+# Plotting the compound_scores
+x = [i for i in range(len(compound_scores))]
 
+plt.plot(x, compound_scores, marker='o', linestyle='-', color='b')
+plt.axhline(0, color='black',linewidth=1)
+plt.axvline(0, color='black',linewidth=1)
+plt.xticks(x)
+plt.title(f"Compound sentiment scores of recent Yahoo finance articles on {ticker}")
+plt.xlabel("Article index")
+plt.ylabel("Compound Sentiment Score")
+plt.grid(True)
 
-
-
-sentiment = sia.polarity_scores(h1_text) # analyzing sentiment
-compound_score = sentiment['compound']
-
-# setting up human readable categories based on the compound_score
-if compound_score > 0.05:
-    sentiment_category = 'positive'
-elif compound_score < -0.05:
-    sentiment_category = 'negative'
-else:
-    sentiment_category = 'neutral'
-
-print(f"{h1_text}")
-print(sentiment)
-print(f"Headline sentiment: {sentiment_category}")
+plt.show()
