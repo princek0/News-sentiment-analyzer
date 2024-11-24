@@ -14,5 +14,5 @@ Libraries used:
 - ~Scrape headlines of yahoo news~
 - ~Add sentiment analysis of headlines using a pre-trained model~
 - ~Refine sentiment analysis by adding custom financial lexicon~
-- Add functionality to scrape all yahoo finance articles on a particular stock and then visualise their sentiment compound_score over time.
+- ~Add functionality to scrape all yahoo finance articles on a particular stock and then visualise their sentiment compound_score over time.~
 - Create a website and host the project on AWS. 
