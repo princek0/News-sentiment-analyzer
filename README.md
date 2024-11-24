@@ -2,9 +2,9 @@
 
 This project will scrape yahoo finance articles on a particular stock of your choosing and perform sentiment analysis on the headlines. It will show you a graph of the sentiment compound score over time.
 
-A compound score = 0 indicates the news headline being neutral.
-A compound score  > 0 indicates a positive headline.
-A compound score < 0 indicates a negative headline.
+- A compound score = 0 indicates the news headline being neutral.
+- A compound score  > 0 indicates a positive headline.
+- A compound score < 0 indicates a negative headline.
 
 Libraries used:
 - nltk
