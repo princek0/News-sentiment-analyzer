@@ -2,7 +2,6 @@ import requests
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from bs4 import BeautifulSoup
-import pandas as pd
 
 # Yahoo finance headlien scraper
 
